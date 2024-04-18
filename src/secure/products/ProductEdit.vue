@@ -27,9 +27,10 @@
 <script setup lang="ts">
 import ImageUpload from '@/secure/components/ImageUpload.vue';
 import axios from "axios";
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-
+import { Product } from '@/classes/Product';
+import { onMounted, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+const {params} = useRoute();
 const title = ref('');
 const description = ref('');
 const image = ref('');
@@ -40,14 +41,32 @@ const changeImage = (im : string) => {
     console.log(im);
     image.value = im ;
 }
+onMounted(async()=>{
+    loading.value = true;
+    const response = await axios.get(`products/${params.id}`);
+    const product : Product = response.data.data;
+    title.value = product.title;
+    description.value = product.description;
+    image.value = product.image;
+    price.value = product.price;
+    loading.value = false ;
+})
+
 const submit = async() => {
     loading.value = true
-    await axios.post('products', {
-        title : title.value,
-        description : description.value,
-        image:image.value,
-        price : price.value
-    })
+    console.log( {
+        title: title.value,
+        description: description.value,
+        image: image.value,
+        price: price.value,
+    });
+    await axios.put(`products/${params.id}`, {
+        title: title.value,
+        description: description.value,
+        image: image.value,
+        price: price.value,
+    });
+    loading.value = false;
      await router.push('/products');
 }
 

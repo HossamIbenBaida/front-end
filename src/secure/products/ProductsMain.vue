@@ -25,7 +25,7 @@
                <td><img :src="product.image" height="50"/></td>
                <td>{{ product.title}}</td>
                <td>{{ product.description}}</td>
-               <td>{{ product.price}}</td>
+               <td>{{ product.price}}$</td>
                <td>
                 <div class="btn-group mr-2">
                   <router-link  :to="`/products/${product.id}/edit`" class="btn btn-sm btn-outline-secondary">Edit</router-link>
