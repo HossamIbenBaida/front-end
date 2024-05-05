@@ -28,11 +28,13 @@ import axios from 'axios';
 import { ref , onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
+
 const router = useRouter();
 const name = ref('');
 const loading = ref(false);
 const permissions = ref([]);
 const selected = ref([] as number[]);
+
 onMounted(async()=>{
     loading.value = true;
     const response = await axios.get('permissions');
@@ -48,13 +50,39 @@ const select = (id:number , checked: boolean) => {
     selected.value = selected.value.filter(s=>s !== id);
 }
 
-const submit = async () =>{
-    loading.value = true;
-    await axios.post('roles' , {
-        name:name.value ,
-        permissions : selected.value
-    });
-   await router.push('/roles')
-   loading.value = false;
-}
+const submit = async () => {
+//     loading.value = true;
+//     const requestBody = {
+//         name: name.value,
+//         permissions: selected.value
+//     };
+//     console.log(requestBody);
+
+//     await axios.post('roles', requestBody);
+//     loading.value = false;
+//     await router.push('/roles');
+if (!name.value.trim()) {
+        console.error('Name field is required.');
+        return;
+    }
+
+if (selected.value.length === 0) {
+        console.error('Please select at least one permission.');
+        return;
+ }
+  loading.value = true;
+    const requestBody = {
+        name: name.value,
+        permissions: selected.value
+    };
+    try {
+        const response = await axios.post('roles', requestBody);
+        console.log('Role created successfully:', response.data);
+        await router.push('/roles');
+    } catch (error) {
+        console.error('Error creating role:', error.response ? error.response.data : error.message);
+    } finally {
+        loading.value = false;
+    }
+};
 </script>

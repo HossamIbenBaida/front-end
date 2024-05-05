@@ -5,6 +5,7 @@ import store from './store'
 import axios from 'axios';
 
 axios.defaults.baseURL='http://localhost:8000/api/';
-axios.defaults.headers['authorization'] = `Bearer ${localStorage.getItem('token')}`;
+//axios.defaults.headers['authorization'] = `Bearer ${localStorage.getItem('token')}`;
+axios.defaults.withCredentials=true;
 
 createApp(App).use(store).use(router).mount('#app')

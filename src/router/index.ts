@@ -14,6 +14,8 @@ import ProductsMain from '@/secure/products/ProductsMain.vue'
 import ProductCreate from '@/secure/products/ProductCreate.vue'
 import ProductEdit from '@/secure/products/ProductEdit.vue'
 import OrdersPage from '@/secure/orders/OrdersPage.vue'
+import OrderItems from '@/secure/orders/OrderItems.vue'
+import ProfilePage from '@/secure/profile/ProfilePage.vue'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/register',
@@ -74,6 +76,14 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: '/orders',
         component: OrdersPage
+      },
+      {
+        path: '/orders/:id',
+        component: OrderItems
+      },
+      {
+        path: '/profile',
+        component: ProfilePage
       },
     ]
   },

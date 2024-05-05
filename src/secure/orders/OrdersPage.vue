@@ -4,7 +4,7 @@
     </div>
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 mb-3 border-bottom">
       <div class="btn-toolbar mb2 mb-md-0">
-        <a href="javascript:void(0)" class="btn btn-sm btn-outline-secondary" >Export</a>
+        <a  class="btn btn-sm btn-outline-secondary" @click ="exportFile()">Export</a>
       </div>
     </div>
     <div v-show="!loading" class="table-responsive">
@@ -26,7 +26,7 @@
                <td>{{ order.total }}</td>
                <td>
                 <div class="btn-group mr-2">
-                  <router-link  :to="`/orders/${order.id}/edit`" class="btn btn-sm btn-outline-secondary">View</router-link>
+                  <router-link  :to="`/orders/${order.id}`" class="btn btn-sm btn-outline-secondary">View</router-link>
                </div>
                </td>
              </tr>
@@ -53,7 +53,17 @@ const load = async (page)=>{
   console.log(orders.value);
   loading.value = false;
 }
-
+ const exportFile = async () => {
+    loading.value=true
+    const response = await axios.get('export' , {responseType:'blob'});
+    const blob = new Blob([response.data], {type:'text/csv'});
+    const downloadUrl=window.URL.createObjectURL(response.data);
+    const link = document.createElement('a');
+    link.href=downloadUrl;
+    link.download = 'orders.csv';
+    link.click();
+    loading.value=false;
+   }
 onMounted(load);
 
 

@@ -2,7 +2,7 @@
     <div v-if="loading" class="loading-overlay">
          <div class="loader"></div>
     </div>
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 mb-3 border-bottom">
+    <div v-if="Authuser.canEdit('products')"  class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 mb-3 border-bottom">
       <div class="btn-toolbar mb2 mb-md-0">
         <router-link to="/products/create" class="btn btn-sm btn-outline-secondary" >Add</router-link>
       </div>
@@ -27,7 +27,7 @@
                <td>{{ product.description}}</td>
                <td>{{ product.price}}$</td>
                <td>
-                <div class="btn-group mr-2">
+                <div class="btn-group mr-2" v-if="Authuser.canEdit('products')">
                   <router-link  :to="`/products/${product.id}/edit`" class="btn btn-sm btn-outline-secondary">Edit</router-link>
                   <a href="javascript:void(0)" class="btn btn-sm btn-outline-secondary" @click="del(product.id)" >Delete</a>
                </div>
@@ -44,11 +44,13 @@
 import { Entity } from "@/interfaces/entity";
 import PaginatorSection from '@/secure/components/PaginatorSection.vue';
 import axios from "axios";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
+import { useStore } from "vuex";
 const products = ref([]);
 const loading = ref(false);
 const lastpage = ref(0);
-
+const store = useStore();
+const Authuser = computed(()=>store.state.User.user);
 const load = async (page:number) =>{
    loading.value = true;
    const response = await axios.get(`products?page=${page}`);

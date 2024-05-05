@@ -3,7 +3,7 @@
          <div class="loader"></div>
     </div>
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 mb-3 border-bottom">
-      <div class="btn-toolbar mb2 mb-md-0">
+      <div v-if="AuthUser.canEdit('roles')" class="btn-toolbar mb2 mb-md-0">
         <router-link to="/roles/create" class="btn btn-sm btn-outline-secondary" >Add Role</router-link>
       </div>
     </div>
@@ -22,7 +22,7 @@
                <td>{{ role.name}}</td>
 
                <td>
-                <div class="btn-group mr-2">
+                <div v-if="AuthUser.canEdit('roles')" class="btn-group mr-2">
                   <router-link  :to="`/roles/${role.id}/edit`" class="btn btn-sm btn-outline-secondary">Edit</router-link>
                   <a href="javascript:void(0)" class="btn btn-sm btn-outline-secondary" @click="del(role.id)">Delete</a>
                </div>
@@ -35,8 +35,10 @@
 <script setup lang="ts">
 import { Entity } from '@/interfaces/entity';
 import axios from 'axios'; 
-import { ref , onMounted } from 'vue';
-
+import { ref , onMounted, computed } from 'vue';
+import { useStore } from 'vuex';
+const store = useStore();
+const AuthUser = computed(()=>store.state.User.user);
 const roles = ref([]);
 const loading = ref(false);
 onMounted(async ()=>{

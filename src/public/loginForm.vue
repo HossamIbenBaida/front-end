@@ -20,18 +20,25 @@ import { useRouter } from 'vue-router';
  const loading = ref(false);
  const password = ref('');
  const router = useRouter();
- 
+//  try {
+//         const response = await axios.post('roles', requestBody);
+//         console.log('Role created successfully:', response.data);
+//         await router.push('/roles');
+//     } catch (error) {
+//         console.error('Error creating role:', error.response ? error.response.data : error.message);
+//     } finally {
+//         loading.value = false;
+//     }
  const login = async ()=>{
   loading.value = true;
-  const response = await axios.post("login",{
+  await axios.post("login",{
   email : email.value ,
   password : password.value
    });
   loading.value = false;
-  console.log(response.data.token)
-  localStorage.setItem('token',response.data.token);
-  axios.defaults.headers['authorization'] = `Bearer ${response.data.token}`;
-
+  // console.log(response.data.token)
+  // localStorage.setItem('token',response.data.token);
+  // axios.defaults.headers['authorization'] = `Bearer ${response.data.token}`;
   await router.push('/');
  }
 

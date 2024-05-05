@@ -3,35 +3,46 @@
     <div class="loader"></div>
   </div>
   
-   <nav-menu  v-if="user" :user="user"/>
+   <nav-menu />
    <div class="container-fluid">
    <div class="row">
     <main-menu v-if="user"/>   
     <div  class="main-content">
      <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-       <router-view v-if="user" ></router-view>
+       <router-view v-if="user?.id" ></router-view>
      </main>
     </div>
    </div>
  </div> 
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { User } from '@/classes/user';
 import MainMenu from '@/secure/components/MainMenu';
 import NavMenu from '@/secure/components/NavMenu';
 
 import axios from "axios";
 import {onMounted , ref} from 'vue';
 import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 const router = useRouter();
 const user = ref(null);
-
+const store = useStore();
 onMounted(async ()=>{
 try {
   const response = await axios.get('user');
   //console.log(response.data.data);
-  
-    user.value = response.data.data ;
+    const u : User = response.data.data ;
+    store.dispatch('User/setUser',new User(
+      u.id,
+      u.first_name,
+      u.last_name,
+      u.email,
+      u.role,
+      u.permissions
+    ));
+    user.value = u ;
+    //user.value=store.state.User.user;
   //console.log(user.value.first_name)
   
  }catch(e){

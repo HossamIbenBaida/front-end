@@ -2,9 +2,9 @@
     <div v-if="loading" class="loading-overlay">
          <div class="loader"></div>
     </div>
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 mb-3 border-bottom">
+    <div v-if="AuthUser.canEdit('users')" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 mb-3 border-bottom">
       <div class="btn-toolbar mb2 mb-md-0">
-        <router-link to="/users/create" class="btn btn-sm btn-outline-secondary" >Add</router-link>
+        <router-link  to="/users/create" class="btn btn-sm btn-outline-secondary" >Add</router-link>
       </div>
     </div>
     <div v-show="!loading" class="table-responsive">
@@ -24,8 +24,8 @@
                <td>{{ user.first_name}} {{ user.last_name}}</td>
                <td>{{ user.email}}</td>
                <td>{{ user.role.name}}</td>
-               <td>
-                <div class="btn-group mr-2">
+               <td  >
+                <div class="btn-group mr-2" v-if="AuthUser.canEdit('users')">
                   <router-link  :to="`/users/${user.id}/edit`" class="btn btn-sm btn-outline-secondary">Edit</router-link>
                   <a href="javascript:void(0)" class="btn btn-sm btn-outline-secondary" @click="del(user.id)">Delete</a>
                </div>
@@ -38,14 +38,15 @@
 </template>
 <script setup lang="ts">
 import axios from 'axios';
-import { ref , onMounted } from 'vue';
+import { ref , onMounted, computed } from 'vue';
 import {Entity} from '@/interfaces/entity'
 import PaginatorSection from '@/secure/components/PaginatorSection.vue';
+import { useStore } from 'vuex';
 const users = ref(null);
 const loading = ref(false);
 const lastpage = ref(0);
-
-
+const store = useStore();
+const AuthUser = computed(()=>store.state.User.user);
 const load = async (page:number)=> {
     loading.value=true
     const response = await axios.get(`users?page=${page}`);
